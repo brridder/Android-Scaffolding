@@ -137,7 +137,7 @@ def generate_files():
         copy_file(r"./templates/"+item["in"], out)
 
 def update_manifest(): 
-     handler = ManifestDomHandler("AndroidManifest.xml")
+     handler = ManifestDomHandler.ManifestDomHandler("AndroidManifest.xml")
      handler.addActivityNode(values[CLASS_NAME])
 
 def main(argv):

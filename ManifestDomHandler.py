@@ -39,7 +39,7 @@ class ManifestDomHandler:
         self.saveXml(self.xmlFile, self.domTree) 
 
 if __name__ == "__main__":
-    if (os.path.exists("AndroidManifest.xml"):
+    if (os.path.exists("AndroidManifest.xml")):
         h = ManifestDomHandler("AndroidManifest.xml")
         h.addActivityNode("test")
 
