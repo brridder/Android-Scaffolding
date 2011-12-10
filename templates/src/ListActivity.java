@@ -2,6 +2,7 @@ package <PACKAGE>;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.os.BaseAdapter;
 
 public class <CLASS_NAME> extends ListActivity {
 
