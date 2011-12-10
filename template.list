@@ -1,7 +1,7 @@
 {
    "activity" : {
       "class"  : {"in" : "src/Activity.java",    "out" : "src/",    "type" : "java"},
-      "layout" : {"in" : "layout/activity.xml", "out" : "res/layout/", default : "activity_default", "type" : "xml"}
+      "layout" : {"in" : "layout/activity.xml", "out" : "res/layout/", "default" : "activity_default", "type" : "xml"}
    },
 
    "test" : {

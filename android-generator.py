@@ -81,7 +81,10 @@ def load_config():
 def parse_config(lines):
     for line in lines:
         param = line.split("=")
-        values["<"+param[0]+">"] = param[1]
+        if (param[0] == "PACKAGE"):
+            values[PACKAGE] = param[1].replace("\n","")
+        else: 
+            values[param[0]] = param[1].replace("\n","")
 
 def set_parameters(argv):
     # TODO :: figure out how to get the package
@@ -89,6 +92,7 @@ def set_parameters(argv):
     values[CLASS_NAME] = argv[1]
     if (len(argv) > 2):
         values[LAYOUT_CLASS_NAME] = argv[2]
+        print values[LAYOUT_CLASS_NAME]
     else:
         values.pop(LAYOUT_CLASS_NAME)
 
@@ -110,8 +114,8 @@ def generate_files():
         out = ""
         if (item["type"] == "java"): 
             out = r"./" + item["out"] + values[PACKAGE].replace(".", "/") + "/" + values[CLASS_NAME] + "." + item["type"]
-        elif (key == "layout" && values.get(LAYOUT_CLASS_NAME) != None)):
-            if (values.get(LAYOUT_CLASS_NAME != None)):
+        elif (key == "layout"):
+            if (values.get(LAYOUT_CLASS_NAME) != None):
                 out = r"./" + item["out"] + values[LAYOUT_CLASS_NAME] + "." + item["type"]
             else:
                 out = r"./" + item["out"] + item["default"] + "." + item["type"]
