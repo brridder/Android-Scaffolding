@@ -10,8 +10,13 @@
           "out" : "res/layout/", 
           "default" : "activity_default", 
           "type" : "xml"
-         }
+         },
+      "manifest" : {
+         "type" : "manifest"
+      }
+
    },
+
 
    "listactivity" : {
       "class" : { 

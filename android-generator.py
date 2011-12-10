@@ -3,7 +3,7 @@
 # TODO :: figure out how to switch between python2 and python
 
 #import re, shlex, os, sys
-import os, sys, json
+import os, sys, json, ManifestDomHandler
 
 PACKAGE = "<PACKAGE>"
 CLASS_NAME = "<CLASS_NAME>"
@@ -34,7 +34,6 @@ def parse_string(line):
 def copy_file(in_file_path, out_file_path):
     if (not os.path.exists(in_file_path)):
        in_file_path = project_dir_name + in_file_path 
-    print in_file_path +  " " + out_file_path
     try:
         in_file = open(in_file_path)
         out_file = open(out_file_path, "w")
@@ -44,7 +43,7 @@ def copy_file(in_file_path, out_file_path):
 
         in_file.close()
         out_file.close()
-
+        print "    create    " + out_file_path
     except: 
         print "Something went wrong... ", sys.exc_info()[0]
     
@@ -68,7 +67,6 @@ def get_template_list():
 
     template_list = json.loads(in_str)
     #DEBUG
-    #print template_list
 
 def load_config():
     lines = []
@@ -102,7 +100,6 @@ def set_parameters(argv):
     values[CLASS_NAME] = argv[1]
     if (len(argv) > 2):
         values[LAYOUT_CLASS_NAME] = argv[2]
-        print values[LAYOUT_CLASS_NAME]
     else:
         values.pop(LAYOUT_CLASS_NAME)
 
@@ -111,7 +108,6 @@ def generate_files():
     for key in template_list.keys():
         if (values[TYPE] == key):
             template_item = template_list[key]
-            print "FOUND"
             break 
 
     if (template_item == None):
@@ -122,6 +118,11 @@ def generate_files():
     for key in template_item.keys():
         item = template_item[key]
         out = ""
+    
+        if (item["type"] == "manifest"):
+            update_manifest()
+            continue
+
         if (item["type"] == "java"): 
             out = r"./" + item["out"] + values[PACKAGE].replace(".", "/") + "/" + values[CLASS_NAME] + "." + item["type"]
         elif (key == "layout"):
@@ -130,16 +131,16 @@ def generate_files():
             else:
                 out = r"./" + item["out"] + item["default"] + "." + item["type"]
                 print "ERROR :: missing layout file name, using template default"
+
         else: 
             out = r"./" + item["out"] + values[CLASS_NAME] + "." + item["type"]
         copy_file(r"./templates/"+item["in"], out)
 
-def main(argv):
-    # DEBUG
-#    print argv
-    print "starting"
-    # END_DEBUG 
+def update_manifest(): 
+     handler = ManifestDomHandler("AndroidManifest.xml")
+     handler.addActivityNode(values[CLASS_NAME])
 
+def main(argv):
     if (len(argv) < 2):
         usage()
         sys.exit(2)
@@ -150,13 +151,6 @@ def main(argv):
     
     generate_files()
     
-#    if (argv[0].lower() == "activity"):
-#        copy_file(r"./templates/src/Activity.java", r"./" + values[CLASS_NAME] + ".java")
-#        #update_manifest()
-#    else:
-#        usage()
-
-
     print "done" 
 
 if __name__ == "__main__":
