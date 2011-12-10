@@ -1,10 +1,9 @@
 #! /usr/bin/python2
-
+#! /usr/bin/python
 # TODO :: figure out how to switch between python2 and python
 
-#import re, shlex, os, sys
-import os, sys, json, ManifestDomHandler
-
+import os, sys, json
+from ManifestDomHandler import ManifestDomHandler
 PACKAGE = "<PACKAGE>"
 CLASS_NAME = "<CLASS_NAME>"
 LAYOUT_CLASS_NAME = "<LAYOUT_CLASS_NAME>"
@@ -43,13 +42,22 @@ def copy_file(in_file_path, out_file_path):
 
         in_file.close()
         out_file.close()
-        print "    create    " + out_file_path
+        print "      create :: " + out_file_path
     except: 
         print "Something went wrong... ", sys.exc_info()[0]
     
 def usage():
-    # TODO :: this
-    print "android-generator -- "
+    print "android-generator -- usage: \n" + \
+          "    android-generator <template type> <class name> <layout name>" 
+    print_template_types()
+
+def print_template_types():
+    global template_list
+    if (template_list == None or len(template_list) == 0):
+        get_template_list()
+    print "    Possible template types: "
+    for key in template_list.keys():
+        print "        " + key
 
 def get_template_list():
     in_str = ""
@@ -66,7 +74,6 @@ def get_template_list():
         print "Could not open the template list"
 
     template_list = json.loads(in_str)
-    #DEBUG
 
 def load_config():
     lines = []
@@ -95,7 +102,6 @@ def parse_config(lines):
             values[param[0]] = param[1].replace("\n","")
 
 def set_parameters(argv):
-    # TODO :: figure out how to get the package
     values[TYPE] = argv[0]
     values[CLASS_NAME] = argv[1]
     if (len(argv) > 2):
@@ -137,8 +143,9 @@ def generate_files():
         copy_file(r"./templates/"+item["in"], out)
 
 def update_manifest(): 
-     handler = ManifestDomHandler.ManifestDomHandler("AndroidManifest.xml")
+     handler = ManifestDomHandler("AndroidManifest.xml")
      handler.addActivityNode(values[CLASS_NAME])
+     print "    Manifest :: Added " + values[CLASS_NAME]
 
 def main(argv):
     if (len(argv) < 2):
@@ -150,8 +157,6 @@ def main(argv):
     get_template_list()
     
     generate_files()
-    
-    print "done" 
 
 if __name__ == "__main__":
     main(sys.argv[1:])

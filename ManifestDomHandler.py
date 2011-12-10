@@ -25,7 +25,6 @@ class ManifestDomHandler:
             print "ERROR :: Could not update Android Manifest file."
 
     def addActivityNode(self, activityName):
-        print "Creating activity node"
         self.openXml(self.xmlFile)
         appNodeList = self.domTree.getElementsByTagName("application")
         appNode = appNodeList.pop()

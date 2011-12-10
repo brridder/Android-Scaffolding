@@ -25,6 +25,36 @@
     
         <activity android:name="test">
         </activity>
+    
+        <activity android:name="test">
+        </activity>
+    
+        <activity android:name="test2">
+        </activity>
+    
+        <activity android:name="test2">
+        </activity>
+    
+        <activity android:name="test2">
+        </activity>
+    
+        <activity android:name="test2">
+        </activity>
+    
+        <activity android:name="test2">
+        </activity>
+    
+        <activity android:name="test2">
+        </activity>
+    
+        <activity android:name="test2">
+        </activity>
+    
+        <activity android:name="test2">
+        </activity>
+    
+        <activity android:name="tes">
+        </activity>
     </application>
 
 </manifest>
