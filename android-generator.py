@@ -19,9 +19,11 @@ values = {
         }
 
 template_list = []
-conf_file_name = r"./android-scaffolding.conf"
 
+conf_file_name = r"./android-scaffolding.conf"
 default_conf_file_name = r"./Android-Scaffolding/android-scaffolding.conf"
+project_dir_name = r"./Android-Scaffolding/"
+
 
 def parse_string(line):
     for k in values.keys():
@@ -30,6 +32,8 @@ def parse_string(line):
     return line
 
 def copy_file(in_file_path, out_file_path):
+    if (not os.path.exists(in_file_path)):
+       in_file_path = project_dir_name + in_file_path 
     print in_file_path +  " " + out_file_path
     try:
         in_file = open(in_file_path)
@@ -52,7 +56,11 @@ def get_template_list():
     in_str = ""
     global template_list
     try: 
-        f = open(r"./template.list", "r")
+        f = None
+        if (os.path.exists(r"./template.list")):
+            f = open(r"./template.list", "r")
+        elif (os.path.exists(project_dir_name + "template.list")):
+            f = open(project_dir_name + "template.list", "r")
         in_str = f.read().replace("\n","")
         f.close()
     except:
@@ -81,6 +89,8 @@ def load_config():
 def parse_config(lines):
     for line in lines:
         param = line.split("=")
+        if (len(param) < 2):
+            continue
         if (param[0] == "PACKAGE"):
             values[PACKAGE] = param[1].replace("\n","")
         else: 
