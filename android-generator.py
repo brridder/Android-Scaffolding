@@ -2,7 +2,7 @@
 #! /usr/bin/python
 # TODO :: figure out how to switch between python2 and python
 
-import os, sys, json
+import os, sys, json, re
 from ManifestDomHandler import ManifestDomHandler
 PACKAGE = "<PACKAGE>"
 CLASS_NAME = "<CLASS_NAME>"
@@ -107,7 +107,13 @@ def set_parameters(argv):
     if (len(argv) > 2):
         values[LAYOUT_CLASS_NAME] = argv[2]
     else:
-        values.pop(LAYOUT_CLASS_NAME)
+        values[LAYOUT_CLASS_NAME] = infer_layout_name
+
+def infer_layout_name():
+    class_name = values[CLASS_NAME]
+    cap_indices = re.findall("[A-Z]",class_name)
+ 
+    
 
 def generate_files():
     template_item = None
