@@ -11,12 +11,12 @@ class ManifestDomHandler:
     def __init__(self, xmlFile):
         self.xmlFile = xmlFile
    
-    def openXml(self, xmlFile):
+    def open_xml(self, xmlFile):
         self.domTree = None
         self.domTree = minidom.parse(xmlFile)
         return self.domTree
     
-    def saveXml(self, xmlOutFile, outputDom):
+    def save_xml(self, xmlOutFile, outputDom):
         try:
             f = open(xmlOutFile, "w")
             f.write(outputDom.toxml())
@@ -24,8 +24,8 @@ class ManifestDomHandler:
         except:
             print "ERROR :: Could not update Android Manifest file."
 
-    def addActivityNode(self, activityName):
-        self.openXml(self.xmlFile)
+    def add_activity_node(self, activityName):
+        self.open_xml(self.xmlFile)
         appNodeList = self.domTree.getElementsByTagName("application")
         appNode = appNodeList.pop()
         if (appNode):
@@ -35,10 +35,10 @@ class ManifestDomHandler:
             appNode.appendChild(self.domTree.createTextNode("\n        "))
             appNode.appendChild(newActivityNode)
             appNode.appendChild(self.domTree.createTextNode("\n    "))
-        self.saveXml(self.xmlFile, self.domTree) 
+        self.save_xml(self.xmlFile, self.domTree) 
 
 if __name__ == "__main__":
     if (os.path.exists("AndroidManifest.xml")):
         h = ManifestDomHandler("AndroidManifest.xml")
-        h.addActivityNode("test")
+        h.add_activity_node("test")
 

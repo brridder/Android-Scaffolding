@@ -44,7 +44,7 @@ def copy_file(in_file_path, out_file_path):
         out_file.close()
         print "      create :: " + out_file_path
     except: 
-        print "Something went wrong... ", sys.exc_info()[0]
+        print "Something went wrong... ", sys.exc_info()[1] 
     
 def usage():
     print "android-generator -- usage: \n" + \
@@ -144,7 +144,7 @@ def generate_files():
 
 def update_manifest(): 
      handler = ManifestDomHandler("AndroidManifest.xml")
-     handler.addActivityNode(values[CLASS_NAME])
+     handler.add_activity_node(values[CLASS_NAME])
      print "    Manifest :: Added " + values[CLASS_NAME]
 
 def main(argv):
