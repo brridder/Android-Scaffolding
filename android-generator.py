@@ -160,20 +160,24 @@ def update_manifest():
      handler.add_activity_node(values[CLASS_NAME])
      print "    Manifest :: Added " + values[CLASS_NAME]
 
-def setup_file_paths():
+def setup():
     global project_dir_name 
     path = os.path.realpath(__file__)
     split_path = path.split('/')
     project_dir_name = path.replace(split_path[len(split_path) - 1], "",)
     default_conf_file_name = project_dir_name + "android-scaffolding.conf"
 
+    handler = ManifestDomHandler("AndroidManifest.xml")
+    values[PACKAGE] = handler.get_package_name()
+
+
 def main(argv):
-    setup_file_paths()
+    setup()
     if (len(argv) < 2):
         usage()
         sys.exit(2)
    
-    load_config()
+#    load_config()
     set_parameters(argv)
     get_template_list()
     

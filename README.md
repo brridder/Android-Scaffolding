@@ -8,6 +8,7 @@ To install this project:
 
 2. Add the `bin` directory to your path in your bash rc.
 
+
 # Usage
 
 Once added to the path, usage is:

@@ -37,6 +37,14 @@ class ManifestDomHandler:
             appNode.appendChild(self.domTree.createTextNode("\n    "))
         self.save_xml(self.xmlFile, self.domTree) 
 
+    def get_package_name(self):
+        self.open_xml(self.xmlFile)
+        manifestNode = self.domTree.getElementsByTagName("manifest").pop()
+        package = ""
+        if (manifestNode):
+            package = manifestNode.getAttribute("package")
+        return package
+
 if __name__ == "__main__":
     if (os.path.exists("AndroidManifest.xml")):
         h = ManifestDomHandler("AndroidManifest.xml")
