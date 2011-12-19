@@ -1,5 +1,5 @@
-#! /usr/bin/python2
 #! /usr/bin/python
+#! /usr/bin/python2
 # TODO :: figure out how to switch between python2 and python
 
 import os, sys, json, re
@@ -107,13 +107,20 @@ def set_parameters(argv):
     if (len(argv) > 2):
         values[LAYOUT_CLASS_NAME] = argv[2]
     else:
-        values[LAYOUT_CLASS_NAME] = infer_layout_name
+        values[LAYOUT_CLASS_NAME] = infer_layout_name()
 
 def infer_layout_name():
     class_name = values[CLASS_NAME]
-    cap_indices = re.findall("[A-Z]",class_name)
- 
-    
+    name_substrings = re.sub('((?=[A-Z][a-z])|(?<=[a-z])(?=[A-Z]))', ' ', class_name).strip().split(" ")
+    layout_name = ""
+    for i in range(0, len(name_substrings) - 1):
+        if (i == 0):
+            layout_name = name_substrings[i].lower()
+        else:
+            layout_name += "_" + name_substrings[i].lower()
+    layout_name += "_layout"
+    print layout_name
+    return layout_name
 
 def generate_files():
     template_item = None
