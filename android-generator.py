@@ -1,6 +1,3 @@
-#! /usr/bin/python
-#! /usr/bin/python2
-# TODO :: figure out how to switch between python2 and python
 
 import os, sys, json, re
 from ManifestDomHandler import ManifestDomHandler
@@ -163,7 +160,15 @@ def update_manifest():
      handler.add_activity_node(values[CLASS_NAME])
      print "    Manifest :: Added " + values[CLASS_NAME]
 
+def setup_file_paths():
+    global project_dir_name 
+    path = os.path.realpath(__file__)
+    split_path = path.split('/')
+    project_dir_name = path.replace(split_path[len(split_path) - 1], "",)
+    default_conf_file_name = project_dir_name + "android-scaffolding.conf"
+
 def main(argv):
+    setup_file_paths()
     if (len(argv) < 2):
         usage()
         sys.exit(2)

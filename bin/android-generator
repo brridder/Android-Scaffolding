@@ -1,0 +1,8 @@
+unamestr=`uname`
+scriptpath='../android-generator.py'
+
+if [[ "$unamestr" == 'Linux' ]]; then
+    python2 `dirname $0`/"$scriptpath" $1 $2 $3 
+elif [[ "$unamestr" == 'Darwin' ]]; then
+    python `dirname $0`/"$scriptpath" $1 $2 $3
+fi
