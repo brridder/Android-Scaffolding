@@ -17,3 +17,5 @@ Once added to the path, usage is:
 
 To see a list of available templates, run the script without any parameters.
 
+Currently, the package name is grabbed from the android manifest file. Eventually, the package name will be modified
+based on the template provided.
