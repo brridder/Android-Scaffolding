@@ -48,7 +48,7 @@ def copy_file(in_file_path, out_file_path):
     
 def usage():
     print "android-generator -- usage: \n" + \
-          "    android-generator <template type> <class name> <layout name>" 
+          "    android-generator <template type> <class name> [<layout name>]" 
     print_template_types()
 
 def print_template_types():
@@ -110,6 +110,9 @@ def set_parameters(argv):
         values[LAYOUT_CLASS_NAME] = infer_layout_name()
 
 def infer_layout_name():
+    """Infer the layout name based on the class name, convention is 
+    blah_blah_layout.xml
+    """
     class_name = values[CLASS_NAME]
     name_substrings = re.sub('((?=[A-Z][a-z])|(?<=[a-z])(?=[A-Z]))', ' ', class_name).strip().split(" ")
     layout_name = ""
