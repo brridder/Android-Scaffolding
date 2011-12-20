@@ -45,7 +45,7 @@ def copy_java_file(in_file_path, out_file_path, package_name):
     if (not os.path.exists(new_out_path)):
         os.makedirs(new_out_path)
 
-    new_out_path += split_out_path[len(split_out_path) - 1]
+    new_out_path += get_new_file_name(split_out_path[-1], package_name)
     out_file_path = new_out_path
 
     try:
@@ -60,6 +60,21 @@ def copy_java_file(in_file_path, out_file_path, package_name):
         print "      create :: " + out_file_path
     except: 
         print "Something went wrong... ", sys.exc_info()[1]
+
+def get_new_file_name(in_file_name, package_name):
+    name_substrings = get_camel_case_substrings(in_file_name)
+    if (name_substrings[-1] == package_name):
+        return in_file_name
+    else:
+        name_substrings[-1] = package_name
+        string = ""
+        for t in name_substrings:
+            tl = list(t)
+            tl[0] = tl[0].upper()
+            string += "".join(tl)
+        return string + ".java"
+
+
 
 def copy_file(in_file_path, out_file_path):
     if (not os.path.exists(in_file_path)):
@@ -145,7 +160,7 @@ def infer_layout_name():
     blah_blah_layout.xml
     """
     class_name = values[CLASS_NAME]
-    name_substrings = re.sub('((?=[A-Z][a-z])|(?<=[a-z])(?=[A-Z]))', ' ', class_name).strip().split(" ")
+    name_substrings = get_camel_case_substrings(class_name)
     layout_name = ""
     for i in range(0, len(name_substrings) - 1):
         if (i == 0):
@@ -154,6 +169,10 @@ def infer_layout_name():
             layout_name += "_" + name_substrings[i].lower()
     layout_name += "_layout"
     return layout_name
+
+def get_camel_case_substrings(string):
+    return re.sub('((?=[A-Z][a-z])|(?<=[a-z])(?=[A-Z]))', ' ', string).strip().split(" ")
+
 
 def generate_files():
     template_item = None
