@@ -5,6 +5,7 @@ PACKAGE = "<PACKAGE>"
 CLASS_NAME = "<CLASS_NAME>"
 LAYOUT_CLASS_NAME = "<LAYOUT_CLASS_NAME>"
 TYPE = "<TYPE>"
+PACKAGE_DETAIL = "PACKAGE_DETAIL"
 
 template_dir = r"./templates"
 values = {
@@ -12,6 +13,7 @@ values = {
         CLASS_NAME : "TestActivity",
         LAYOUT_CLASS_NAME : "test_activity",
         TYPE : "test",
+        PACKAGE_DETAIL : "",
         }
 
 template_list = []
@@ -23,13 +25,29 @@ project_dir_name = r"./Android-Scaffolding/"
 
 def parse_string(line):
     for k in values.keys():
-        if line.find(k):
+        if line.find(k) != -1:
             line = line.replace(k, values[k])
+            if (k == PACKAGE):
+                line = line.replace(";", "." + values[PACKAGE_DETAIL] + ";")
     return line
 
-def copy_file(in_file_path, out_file_path):
+def copy_java_file(in_file_path, out_file_path):
+
+    split_out_path = out_file_path.split("/")
+    split_out_path.insert(len(split_out_path) - 1, values[PACKAGE_DETAIL])
+    new_out_path = ""
+    for d in split_out_path[:-1]:
+        new_out_path += d + "/"
+
     if (not os.path.exists(in_file_path)):
-       in_file_path = project_dir_name + in_file_path 
+        in_file_path = project_dir_name + in_file_path 
+
+    if (not os.path.exists(new_out_path)):
+        os.makedirs(new_out_path)
+
+    new_out_path += split_out_path[len(split_out_path) - 1]
+    out_file_path = new_out_path
+
     try:
         in_file = open(in_file_path)
         out_file = open(out_file_path, "w")
@@ -41,7 +59,23 @@ def copy_file(in_file_path, out_file_path):
         out_file.close()
         print "      create :: " + out_file_path
     except: 
-        print "Something went wrong... ", sys.exc_info()[1] 
+        print "Something went wrong... ", sys.exc_info()[1]
+
+def copy_file(in_file_path, out_file_path):
+    if (not os.path.exists(in_file_path)):
+        in_file_path = project_dir_name + in_file_path
+    try:
+        in_file = open(in_file_path)
+        out_file = open(out_file_path, "w")
+        
+        for line in in_file:
+            out_file.write(line)
+
+        in_file.close()
+        out_file.close()
+        print "      create :: " + out_file_path
+    except: 
+        print "Something went wrong... ", sys.exc_info()[1]
     
 def usage():
     print "android-generator -- usage: \n" + \
@@ -119,7 +153,6 @@ def infer_layout_name():
         else:
             layout_name += "_" + name_substrings[i].lower()
     layout_name += "_layout"
-    print layout_name
     return layout_name
 
 def generate_files():
@@ -137,23 +170,23 @@ def generate_files():
     for key in template_item.keys():
         item = template_item[key]
         out = ""
-    
-        if (item["type"] == "manifest"):
+        if (key == "package"):
+            values[PACKAGE_DETAIL] = item
+        elif (item["type"] == "manifest"):
             update_manifest()
-            continue
-
-        if (item["type"] == "java"): 
+        elif (item["type"] == "java"): 
             out = r"./" + item["out"] + values[PACKAGE].replace(".", "/") + "/" + values[CLASS_NAME] + "." + item["type"]
+            copy_java_file(r"./templates/"+item["in"], out)
         elif (key == "layout"):
             if (values.get(LAYOUT_CLASS_NAME) != None):
                 out = r"./" + item["out"] + values[LAYOUT_CLASS_NAME] + "." + item["type"]
             else:
                 out = r"./" + item["out"] + item["default"] + "." + item["type"]
                 print "ERROR :: missing layout file name, using template default"
-
+            copy_file(r"./templates/"+item["in"], out)
         else: 
             out = r"./" + item["out"] + values[CLASS_NAME] + "." + item["type"]
-        copy_file(r"./templates/"+item["in"], out)
+            copy_file(r"./templates/"+item["in"], out)
 
 def update_manifest(): 
      handler = ManifestDomHandler("AndroidManifest.xml")
@@ -177,7 +210,6 @@ def main(argv):
         usage()
         sys.exit(2)
    
-#    load_config()
     set_parameters(argv)
     get_template_list()
     

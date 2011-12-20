@@ -13,8 +13,8 @@
          },
       "manifest" : {
          "type" : "manifest"
-      }
-
+        },
+      "package" : "activity"
    },
 
 
@@ -29,7 +29,8 @@
          "out" : "res/layout/",
          "default" : "list_activity_default",
          "type" : "xml"
-      }
+      },
+      "package" : "activity"
    }
 }
    
