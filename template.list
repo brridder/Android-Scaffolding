@@ -1,7 +1,7 @@
 {
    "activity" : [
         {
-          "object" : "class",
+          "object" : "activity",
           "in" : "src/Activity.java",    
           "out" : "src/",    
           "type" : "java",
@@ -21,16 +21,16 @@
    ],
 
 
-   "listactivity" : [
+    "listactivity" : [
         { 
-          "object" : "class",
+          "object" : "activity",
           "in" : "src/ListActivity.java", 
           "out" : "src/", 
           "type" : "java",
           "package" : "activities"
         },
         {
-          "object" : "class",
+          "object" : "adapter",
           "in" : "src/BaseAdapter.java",
           "out" : "src/",
           "type" : "java",
@@ -47,11 +47,11 @@
          "object" : "manifest",
          "type" : "activity"
         }
-   ],
+    ],
 
-   "fragment" : [
+    "fragment" : [
         {
-            "object" : "class",
+            "object" : "fragment",
             "in" : "src/Fragment.java",
             "out" : "src/",
             "type" : "java",
@@ -64,6 +64,15 @@
             "default" : "list_activity_default",
             "type" : "xml"
         }
-      ]
+    ],
+    "view" : [
+        {
+            "object" : "view",
+            "in" : "src/View.java",
+            "out" : "src/",
+            "type" : "java",
+            "package" : "views"
+        }
+    ]
 }
    

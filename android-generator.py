@@ -6,6 +6,7 @@ CLASS_NAME = "<CLASS_NAME>"
 LAYOUT_CLASS_NAME = "<LAYOUT_CLASS_NAME>"
 TYPE = "<TYPE>"
 PACKAGE_DETAIL = "PACKAGE_DETAIL"
+OBJECT = "OBJECT"
 
 template_dir = r"./templates"
 values = {
@@ -14,6 +15,7 @@ values = {
         LAYOUT_CLASS_NAME : "test_activity",
         TYPE : "test",
         PACKAGE_DETAIL : "",
+        OBJECT : "",
         }
 
 template_list = []
@@ -38,10 +40,10 @@ def parse_string(line):
 def get_class_name():
     class_name = values[CLASS_NAME]
     name_substrings = get_camel_case_substrings(class_name)
-    if (name_substrings[-1] == values[PACKAGE_DETAIL]):
+    if (name_substrings[-1] == values[OBJECT]):
         return class_name 
     else:
-        name_substrings[-1] = values[PACKAGE_DETAIL] 
+        name_substrings[-1] = values[OBJECT] 
         string = ""
         for t in name_substrings:
             tl = list(t)
@@ -63,7 +65,7 @@ def copy_java_file(in_file_path, out_file_path, package_name):
     if (not os.path.exists(new_out_path)):
         os.makedirs(new_out_path)
 
-    new_out_path += get_new_file_name(split_out_path[-1], package_name)
+    new_out_path += get_new_file_name(split_out_path[-1], values[OBJECT])
     out_file_path = new_out_path
     values[PACKAGE_DETAIL] = package_name
     try:
@@ -80,11 +82,12 @@ def copy_java_file(in_file_path, out_file_path, package_name):
         print "Something went wrong... ", sys.exc_info()[1]
 
 def get_new_file_name(in_file_name, package_name):
+    in_file_name = in_file_name.replace(".java","")
     name_substrings = get_camel_case_substrings(in_file_name)
     if (name_substrings[-1] == package_name):
         return in_file_name
     else:
-        name_substrings[-1] = package_name
+        name_substrings.insert(len(name_substrings), package_name)
         string = ""
         for t in name_substrings:
             tl = list(t)
@@ -180,7 +183,9 @@ def infer_layout_name():
     class_name = values[CLASS_NAME]
     name_substrings = get_camel_case_substrings(class_name)
     layout_name = ""
-    for i in range(0, len(name_substrings) - 1):
+    length = len(name_substrings) - 1 if name_substrings[-1].lower() == values[OBJECT] else len(name_substrings)
+    print length
+    for i in range(0, length):
         if (i == 0):
             layout_name = name_substrings[i].lower()
         else:
@@ -210,6 +215,7 @@ def generate_files():
             update_manifest()
         elif (item["type"] == "java"): 
             out = r"./" + item["out"] + values[PACKAGE].replace(".", "/") + "/" + values[CLASS_NAME] + "." + item["type"]
+            values[OBJECT] = item["object"]
             copy_java_file(r"./templates/"+item["in"], out, item["package"])
         elif (item["object"] == "layout"):
             if (values.get(LAYOUT_CLASS_NAME) != None):
