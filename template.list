@@ -5,7 +5,7 @@
           "in" : "src/Activity.java",    
           "out" : "src/",    
           "type" : "java",
-          "package" : "activity"
+          "package" : "activities"
         },
         {
           "object" : "layout",
@@ -27,14 +27,14 @@
           "in" : "src/ListActivity.java", 
           "out" : "src/", 
           "type" : "java",
-          "package" : "activity"
+          "package" : "activities"
         },
         {
           "object" : "class",
           "in" : "src/BaseAdapter.java",
           "out" : "src/",
           "type" : "java",
-          "package" : "adapter"
+          "package" : "adapters"
         },
         {
           "object" : "layout",
@@ -55,7 +55,7 @@
             "in" : "src/Fragment.java",
             "out" : "src/",
             "type" : "java",
-            "package" : "fragment"
+            "package" : "fragments"
         },
         {
             "object" : "layout",
