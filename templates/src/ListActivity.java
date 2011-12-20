@@ -2,7 +2,9 @@ package <PACKAGE>;
 
 import android.app.ListActivity;
 import android.os.Bundle;
-import android.os.BaseAdapter;
+import android.widget.BaseAdapter;
+
+import <PACKAGE>.R;
 
 public class <CLASS_NAME> extends ListActivity {
 

@@ -3,6 +3,8 @@ package <PACKAGE>;
 import android.app.Activity;
 import android.os.Bundle;
 
+import <PACKAGE>.R;
+
 public class <CLASS_NAME> extends Activity {
 
     @Override

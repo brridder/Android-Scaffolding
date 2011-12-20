@@ -26,10 +26,28 @@ project_dir_name = r"./Android-Scaffolding/"
 def parse_string(line):
     for k in values.keys():
         if line.find(k) != -1:
-            line = line.replace(k, values[k])
-            if (k == PACKAGE):
+            if (k == PACKAGE and line.startswith("package")):
+                line = line.replace(k, values[k])
                 line = line.replace(";", "." + values[PACKAGE_DETAIL] + ";")
+            elif (k == CLASS_NAME):
+                line = line.replace(k, get_class_name())
+            else:
+                line = line.replace(k, values[k])
     return line
+
+def get_class_name():
+    class_name = values[CLASS_NAME]
+    name_substrings = get_camel_case_substrings(class_name)
+    if (name_substrings[-1] == values[PACKAGE_DETAIL]):
+        return class_name 
+    else:
+        name_substrings[-1] = values[PACKAGE_DETAIL] 
+        string = ""
+        for t in name_substrings:
+            tl = list(t)
+            tl[0] = tl[0].upper()
+            string += "".join(tl)
+        return string 
 
 def copy_java_file(in_file_path, out_file_path, package_name):
 
@@ -47,7 +65,7 @@ def copy_java_file(in_file_path, out_file_path, package_name):
 
     new_out_path += get_new_file_name(split_out_path[-1], package_name)
     out_file_path = new_out_path
-
+    values[PACKAGE_DETAIL] = package_name
     try:
         in_file = open(in_file_path)
         out_file = open(out_file_path, "w")

@@ -47,6 +47,23 @@
          "object" : "manifest",
          "type" : "activity"
         }
-   ]
+   ],
+
+   "fragment" : [
+        {
+            "object" : "class",
+            "in" : "src/Fragment.java",
+            "out" : "src/",
+            "type" : "java",
+            "package" : "fragment"
+        },
+        {
+            "object" : "layout",
+            "in" : "layout/fragment.xml",
+            "out" : "res.layout",
+            "default" : "list_activity_default",
+            "type" : "xml"
+        }
+      ]
 }
    
