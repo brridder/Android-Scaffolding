@@ -1,36 +1,52 @@
 {
-   "activity" : {
-      "class"  : {
+   "activity" : [
+        {
+          "object" : "class",
           "in" : "src/Activity.java",    
           "out" : "src/",    
-          "type" : "java"
-         },
-      "layout" : {
+          "type" : "java",
+          "package" : "activity"
+        },
+        {
+          "object" : "layout",
           "in" : "layout/activity.xml", 
           "out" : "res/layout/", 
           "default" : "activity_default", 
           "type" : "xml"
-         },
-      "manifest" : {
-         "type" : "manifest"
         },
-      "package" : "activity"
-   },
+        {
+         "object" : "manifest",
+         "type" : "activity"
+        }
+   ],
 
 
-   "listactivity" : {
-      "class" : { 
+   "listactivity" : [
+        { 
+          "object" : "class",
           "in" : "src/ListActivity.java", 
           "out" : "src/", 
-          "type" : "java"
-         },
-      "layout" : {
+          "type" : "java",
+          "package" : "activity"
+        },
+        {
+          "object" : "class",
+          "in" : "src/BaseAdapter.java",
+          "out" : "src/",
+          "type" : "java",
+          "package" : "adapter"
+        },
+        {
+          "object" : "layout",
          "in" : "layout/listactivity.xml",
          "out" : "res/layout/",
          "default" : "list_activity_default",
          "type" : "xml"
-      },
-      "package" : "activity"
-   }
+        },
+        {
+         "object" : "manifest",
+         "type" : "activity"
+        }
+   ]
 }
    

@@ -1,6 +1,6 @@
-
 import os, sys, json, re
 from ManifestDomHandler import ManifestDomHandler
+
 PACKAGE = "<PACKAGE>"
 CLASS_NAME = "<CLASS_NAME>"
 LAYOUT_CLASS_NAME = "<LAYOUT_CLASS_NAME>"
@@ -31,10 +31,10 @@ def parse_string(line):
                 line = line.replace(";", "." + values[PACKAGE_DETAIL] + ";")
     return line
 
-def copy_java_file(in_file_path, out_file_path):
+def copy_java_file(in_file_path, out_file_path, package_name):
 
     split_out_path = out_file_path.split("/")
-    split_out_path.insert(len(split_out_path) - 1, values[PACKAGE_DETAIL])
+    split_out_path.insert(len(split_out_path) - 1, package_name)
     new_out_path = ""
     for d in split_out_path[:-1]:
         new_out_path += d + "/"
@@ -167,17 +167,14 @@ def generate_files():
         usage()
         return
 
-    for key in template_item.keys():
-        item = template_item[key]
+    for item in template_item:
         out = ""
-        if (key == "package"):
-            values[PACKAGE_DETAIL] = item
-        elif (item["type"] == "manifest"):
+        if (item["object"] == "manifest"):
             update_manifest()
         elif (item["type"] == "java"): 
             out = r"./" + item["out"] + values[PACKAGE].replace(".", "/") + "/" + values[CLASS_NAME] + "." + item["type"]
-            copy_java_file(r"./templates/"+item["in"], out)
-        elif (key == "layout"):
+            copy_java_file(r"./templates/"+item["in"], out, item["package"])
+        elif (item["object"] == "layout"):
             if (values.get(LAYOUT_CLASS_NAME) != None):
                 out = r"./" + item["out"] + values[LAYOUT_CLASS_NAME] + "." + item["type"]
             else:
