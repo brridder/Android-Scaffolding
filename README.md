@@ -1,3 +1,8 @@
+# Purpose
+This project was started to fill in some of the gaps that the ADT plugin for
+eclipse has. The aim of this is to reduce the amount of grunt work required to
+add new activities and more to a project.
+
 # Installation
 
 To install this project:
@@ -17,5 +22,3 @@ Once added to the path, usage is:
 
 To see a list of available templates, run the script without any parameters.
 
-Currently, the package name is grabbed from the android manifest file. Eventually, the package name will be modified
-based on the template provided.
