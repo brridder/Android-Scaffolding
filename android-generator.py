@@ -40,7 +40,7 @@ class AndroidGenerator:
     def usage(self):
         print "android-generator -- usage: \n" + \
               "    android-generator <template type> <class name> [<layout name>]" 
-        print_template_types()
+        self.print_template_types()
 
     def parse_string(self, line):
         for k in self.values.keys():
@@ -57,7 +57,7 @@ class AndroidGenerator:
     def get_class_name(self):
         class_name = self.values[CLASS_NAME]
         name_substrings = get_camel_case_substrings(class_name)
-        if (name_substrings[-1] == self.values[OBJECT]):
+        if (name_substrings[-1].lower() == self.values[OBJECT].lower()):
             return class_name 
         else:
             name_substrings[-1] = self.values[OBJECT] 
@@ -67,6 +67,40 @@ class AndroidGenerator:
                 tl[0] = tl[0].upper()
                 string += "".join(tl)
             return string 
+
+    def get_new_file_name(self, in_file_name, package_name):
+        in_file_name = in_file_name.replace(".java","")
+        name_substrings = self.get_camel_case_substrings(in_file_name)
+        print name_substrings[-1] + " " + self.values[OBJECT]
+        if (name_substrings[-1].lower() == package_name.lower()):
+            return in_file_name
+        else:
+            name_substrings.insert(len(name_substrings), package_name)
+            print name_substrings
+            string = ""
+            for t in name_substrings:
+                tl = list(t)
+                tl[0] = tl[0].upper()
+                string += "".join(tl)
+            print string
+            return string + ".java"
+
+    def get_template_list(self):
+        in_str = ""
+        try: 
+            f = None
+            if (os.path.exists(r"./template.list")):
+                f = open(r"./template.list", "r")
+            elif (os.path.exists(self.project_dir_name + "template.list")):
+                f = open(self.project_dir_name + "template.list", "r")
+            in_str = f.read().replace("\n","")
+            f.close()
+        except:
+            print "Could not open the template list"
+        self.template_list = json.loads(in_str)
+
+    def get_camel_case_substrings(self, string):
+        return re.sub('((?=[A-Z][a-z])|(?<=[a-z])(?=[A-Z]))', ' ', string).strip().split(" ")
 
     def copy_java_file(self, in_file_path, out_file_path, package_name):
         split_out_path = out_file_path.split("/")
@@ -82,25 +116,10 @@ class AndroidGenerator:
             os.makedirs(new_out_path)
 
         new_out_path += self.get_new_file_name(split_out_path[-1], self.values[OBJECT])
+        print new_out_path
         out_file_path = new_out_path
         self.values[PACKAGE_DETAIL] = package_name
         self.copy_file(in_file_path, out_file_path)
-
-    def get_new_file_name(self, in_file_name, package_name):
-        in_file_name = in_file_name.replace(".java","")
-        name_substrings = self.get_camel_case_substrings(in_file_name)
-        if (name_substrings[-1] == package_name):
-            return in_file_name
-        else:
-            name_substrings.insert(len(name_substrings), package_name)
-            string = ""
-            for t in name_substrings:
-                tl = list(t)
-                tl[0] = tl[0].upper()
-                string += "".join(tl)
-            return string + ".java"
-
-
 
     def copy_file(self, in_file_path, out_file_path):
         if (not os.path.exists(in_file_path)):
@@ -117,8 +136,6 @@ class AndroidGenerator:
             print "      create :: " + out_file_path
         except: 
             print "Something went wrong... ", sys.exc_info()[1]
-        
-    
 
     def print_template_types(self):
         if (self.template_list == None or len(self.template_list) == 0):
@@ -126,21 +143,7 @@ class AndroidGenerator:
         print "    Possible template types: "
         for key in self.template_list.keys():
             print "        " + key
-
-    def get_template_list(self):
-        in_str = ""
-        try: 
-            f = None
-            if (os.path.exists(r"./template.list")):
-                f = open(r"./template.list", "r")
-            elif (os.path.exists(self.project_dir_name + "template.list")):
-                f = open(self.project_dir_name + "template.list", "r")
-            in_str = f.read().replace("\n","")
-            f.close()
-        except:
-            print "Could not open the template list"
-        self.template_list = json.loads(in_str)
-
+    
     def load_config(self):
         lines = []
         if (os.path.exists(conf_file_name)):
@@ -168,10 +171,10 @@ class AndroidGenerator:
                 self.values[param[0]] = param[1].replace("\n","")
 
     def set_parameters(self, argv):
-        self.values[TYPE] = argv[0]
+        self.values[TYPE] = argv[0].lower()
         self.values[CLASS_NAME] = argv[1]
         if (len(argv) > 2):
-            self.values[LAYOUT_CLASS_NAME] = argv[2]
+            self.values[LAYOUT_CLASS_NAME] = argv[2].lower()
         else:
             self.values[LAYOUT_CLASS_NAME] = self.infer_layout_name()
 
@@ -191,9 +194,6 @@ class AndroidGenerator:
                 layout_name += "_" + name_substrings[i].lower()
         layout_name += "_layout"
         return layout_name
-
-    def get_camel_case_substrings(self, string):
-        return re.sub('((?=[A-Z][a-z])|(?<=[a-z])(?=[A-Z]))', ' ', string).strip().split(" ")
 
 
     def generate_files(self):
@@ -231,8 +231,6 @@ class AndroidGenerator:
          handler = ManifestDomHandler("AndroidManifest.xml")
          handler.add_activity_node(self.values[CLASS_NAME])
          print "    Manifest :: Added " + self.values[CLASS_NAME]
-
-
 
 
 def main(argv):
