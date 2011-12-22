@@ -42,6 +42,13 @@ class AndroidGenerator:
               "    android-generator <template type> <class name> [<layout name>]" 
         self.print_template_types()
 
+    def print_template_types(self):
+        if (self.template_list == None or len(self.template_list) == 0):
+            self.get_template_list()
+            print "    Possible template types: "
+            for key in self.template_list.keys():
+                print "        " + key
+
     def parse_string(self, line):
         for k in self.values.keys():
             if line.find(k) != -1:
@@ -71,18 +78,15 @@ class AndroidGenerator:
     def get_new_file_name(self, in_file_name, package_name):
         in_file_name = in_file_name.replace(".java","")
         name_substrings = self.get_camel_case_substrings(in_file_name)
-        print name_substrings[-1] + " " + self.values[OBJECT]
         if (name_substrings[-1].lower() == package_name.lower()):
             return in_file_name
         else:
             name_substrings.insert(len(name_substrings), package_name)
-            print name_substrings
             string = ""
             for t in name_substrings:
                 tl = list(t)
                 tl[0] = tl[0].upper()
                 string += "".join(tl)
-            print string
             return string + ".java"
 
     def get_template_list(self):
@@ -116,7 +120,6 @@ class AndroidGenerator:
             os.makedirs(new_out_path)
 
         new_out_path += self.get_new_file_name(split_out_path[-1], self.values[OBJECT])
-        print new_out_path
         out_file_path = new_out_path
         self.values[PACKAGE_DETAIL] = package_name
         self.copy_file(in_file_path, out_file_path)
@@ -137,13 +140,7 @@ class AndroidGenerator:
         except: 
             print "Something went wrong... ", sys.exc_info()[1]
 
-    def print_template_types(self):
-        if (self.template_list == None or len(self.template_list) == 0):
-            self.get_template_list()
-        print "    Possible template types: "
-        for key in self.template_list.keys():
-            print "        " + key
-    
+      
     def load_config(self):
         lines = []
         if (os.path.exists(conf_file_name)):
@@ -186,7 +183,6 @@ class AndroidGenerator:
         name_substrings = self.get_camel_case_substrings(class_name)
         layout_name = ""
         length = len(name_substrings) - 1 if name_substrings[-1].lower() == self.values[OBJECT] else len(name_substrings)
-        print length
         for i in range(0, length):
             if (i == 0):
                 layout_name = name_substrings[i].lower()
@@ -209,29 +205,31 @@ class AndroidGenerator:
             return
 
         for item in template_item:
-            out = ""
-            if (item["object"] == "manifest"):
-                self.update_manifest()
-            elif (item["type"] == "java"): 
-                out = r"./" + item["out"] + self.values[PACKAGE].replace(".", "/") + "/" + self.values[CLASS_NAME] + "." + item["type"]
-                self.values[OBJECT] = item["object"]
-                self.copy_java_file(r"./templates/"+item["in"], out, item["package"])
-            elif (item["object"] == "layout"):
-                if (self.values.get(LAYOUT_CLASS_NAME) != None):
-                    out = r"./" + item["out"] + self.values[LAYOUT_CLASS_NAME] + "." + item["type"]
-                else:
-                    out = r"./" + item["out"] + item["default"] + "." + item["type"]
-                    print "ERROR :: missing layout file name, using template default"
-                self.copy_file(r"./templates/"+item["in"], out)
-            else: 
-                out = r"./" + item["out"] + self.values[CLASS_NAME] + "." + item["type"]
-                self.copy_file(r"./templates/"+item["in"], out)
+            self.handle_template_item(item) 
+
+    def handle_template_item(self, item):
+        out = ""
+        if (item["object"] == "manifest"):
+            self.update_manifest()
+        elif (item["type"] == "java"): 
+            out = r"./" + item["out"] + self.values[PACKAGE].replace(".", "/") + "/" + self.values[CLASS_NAME] + "." + item["type"]
+            self.values[OBJECT] = item["object"]
+            self.copy_java_file(r"./templates/"+item["in"], out, item["package"])
+        elif (item["object"] == "layout"):
+            if (self.values.get(LAYOUT_CLASS_NAME) != None):
+                out = r"./" + item["out"] + self.values[LAYOUT_CLASS_NAME] + "." + item["type"]
+            else:
+                out = r"./" + item["out"] + item["default"] + "." + item["type"]
+                print "ERROR :: missing layout file name, using template default"
+            self.copy_file(r"./templates/"+item["in"], out)
+        else: 
+            out = r"./" + item["out"] + self.values[CLASS_NAME] + "." + item["type"]
+            self.copy_file(r"./templates/"+item["in"], out)
 
     def update_manifest(self): 
          handler = ManifestDomHandler("AndroidManifest.xml")
          handler.add_activity_node(self.values[CLASS_NAME])
          print "    Manifest :: Added " + self.values[CLASS_NAME]
-
 
 def main(argv):
     generator = AndroidGenerator();

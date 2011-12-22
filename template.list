@@ -60,7 +60,7 @@
         {
             "object" : "layout",
             "in" : "layout/fragment.xml",
-            "out" : "res.layout",
+            "out" : "res/layout/",
             "default" : "list_activity_default",
             "type" : "xml"
         }
